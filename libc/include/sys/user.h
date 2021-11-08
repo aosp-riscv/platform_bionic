@@ -235,7 +235,7 @@ struct user_fpsimd_struct {
 
 #elif __riscv_xlen == 64
 
-struct user_regs_struct {
+struct user_gregs_struct {
   uint64_t regs[32];
   uint64_t fpsr;
   uint32_t fpcr;
