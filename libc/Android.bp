@@ -187,6 +187,9 @@ cc_library_static {
         arm64: {
             srcs: ["arch-arm64/bionic/__set_tls.c"],
         },
+        riscv64: {
+            srcs: ["arch-riscv64/bionic/__set_tls.c"],
+        },
         x86: {
             srcs: [
                 "arch-x86/bionic/__libc_init_sysinfo.cpp",
@@ -895,6 +898,24 @@ cc_library_static {
             ],
         },
 
+        riscv64: {
+            srcs: [
+                "arch-riscv64/generic/bionic/memcmp.c",
+                "arch-riscv64/generic/bionic/strnlen.c",
+                "arch-riscv64/generic/bionic/strchr.c",
+                "arch-riscv64/generic/bionic/strcmp.c",
+                "arch-riscv64/generic/bionic/strlen.c",
+                "arch-riscv64/generic/bionic/memset.c",
+                "arch-riscv64/generic/bionic/memcpy.c",
+                "arch-riscv64/bionic/__bionic_clone.S",
+                "arch-riscv64/bionic/_exit_with_stack_teardown.S",
+                "arch-riscv64/bionic/setjmp.S",
+                "arch-riscv64/bionic/syscall.S",
+                "arch-riscv64/bionic/vfork.S",
+                "arch-riscv64/bionic/renameat.c",
+            ],
+        },
+
         x86: {
             srcs: [
                 "arch-x86/generic/string/memcmp.S",
@@ -1305,6 +1326,17 @@ genrule {
 }
 
 genrule {
+    name: "syscalls-riscv64.S",
+    out: ["syscalls-riscv64.S"],
+    srcs: ["SYSCALLS.TXT"],
+    tool_files: [":bionic-gensyscalls"],
+    cmd: "$(location :bionic-gensyscalls) riscv64 $(in) > $(out)",
+    bazel_module: {
+        bp2build_available: true,
+    },
+}
+
+genrule {
     name: "syscalls-x86.S",
     out: ["syscalls-x86.S"],
     srcs: ["SYSCALLS.TXT"],
@@ -1335,6 +1367,9 @@ cc_library_static {
         },
         arm64: {
             srcs: [":syscalls-arm64.S"],
+        },
+        riscv64: {
+            srcs: [":syscalls-riscv64.S"],
         },
         x86: {
             srcs: [":syscalls-x86.S"],
@@ -1728,6 +1763,15 @@ cc_library {
                 keep_symbols: true,
             },
         },
+        riscv64: {
+            version_script: ":libc.riscv64.map",
+
+            // Leave the symbols in the shared library so that stack unwinders can produce
+            // meaningful name resolution.
+            strip: {
+                keep_symbols: true,
+            },
+        },
         x86: {
             // TODO: This is to work around b/24465209. Remove after root cause is fixed.
             pack_relocations: false,
@@ -1801,6 +1845,15 @@ genrule {
     srcs: ["libc.map.txt"],
     tool_files: [":bionic-generate-version-script"],
     cmd: "$(location :bionic-generate-version-script) arm64 $(in) $(out)",
+    bazel_module: { bp2build_available: true },
+}
+
+genrule {
+    name: "libc.riscv64.map",
+    out: ["libc.riscv64.map"],
+    srcs: ["libc.map.txt"],
+    tool_files: [":bionic-generate-version-script"],
+    cmd: "$(location :bionic-generate-version-script) riscv64 $(in) $(out)",
     bazel_module: { bp2build_available: true },
 }
 
@@ -1906,6 +1959,9 @@ cc_library_headers {
         arm64: {
             export_system_include_dirs: ["kernel/uapi/asm-arm64"],
         },
+        riscv64: {
+            export_system_include_dirs: ["kernel/uapi/asm-riscv"],
+        },
         x86: {
             export_system_include_dirs: ["kernel/uapi/asm-x86"],
         },
@@ -2003,6 +2059,9 @@ cc_library {
         arm64: {
             version_script: ":libstdc++.arm64.map",
         },
+        riscv64: {
+            version_script: ":libstdc++.riscv64.map",
+        },
         x86: {
             pack_relocations: false,
             ldflags: ["-Wl,--hash-style=both"],
@@ -2028,6 +2087,14 @@ genrule {
     srcs: ["libstdc++.map.txt"],
     tool_files: [":bionic-generate-version-script"],
     cmd: "$(location :bionic-generate-version-script) arm64 $(in) $(out)",
+}
+
+genrule {
+    name: "libstdc++.riscv64.map",
+    out: ["libstdc++.riscv64.map"],
+    srcs: ["libstdc++.map.txt"],
+    tool_files: [":bionic-generate-version-script"],
+    cmd: "$(location :bionic-generate-version-script) riscv64 $(in) $(out)",
 }
 
 genrule {
@@ -2282,6 +2349,14 @@ ndk_headers {
 }
 
 ndk_headers {
+    name: "libc_asm_riscv64",
+    from: "kernel/uapi/asm-riscv",
+    to: "riscv64-linux-android",
+    srcs: ["kernel/uapi/asm-riscv/**/*.h"],
+    license: "NOTICE",
+}
+
+ndk_headers {
     name: "libc_asm_x86",
     from: "kernel/uapi/asm-x86",
     to: "i686-linux-android",
@@ -2358,6 +2433,17 @@ cc_object {
 }
 
 cc_object {
+    name: "libseccomp_gen_syscall_nrs_riscv64",
+    defaults: ["libseccomp_gen_syscall_nrs_defaults"],
+    local_include_dirs: [
+        "kernel/uapi/asm-riscv",
+        "kernel/uapi",
+    ],
+
+    bazel_module: { bp2build_available: true },
+}
+
+cc_object {
     name: "libseccomp_gen_syscall_nrs_x86",
     defaults: ["libseccomp_gen_syscall_nrs_defaults"],
     srcs: ["seccomp/gen_syscall_nrs_x86.cpp"],
@@ -2401,6 +2487,7 @@ cc_genrule {
         "SYSCALLS.TXT",
         ":libseccomp_gen_syscall_nrs_arm",
         ":libseccomp_gen_syscall_nrs_arm64",
+        ":libseccomp_gen_syscall_nrs_riscv64",
         ":libseccomp_gen_syscall_nrs_x86",
         ":libseccomp_gen_syscall_nrs_x86_64",
     ],
@@ -2434,6 +2521,7 @@ cc_genrule {
         ":generate_app_zygote_blocklist",
         ":libseccomp_gen_syscall_nrs_arm",
         ":libseccomp_gen_syscall_nrs_arm64",
+        ":libseccomp_gen_syscall_nrs_riscv64",
         ":libseccomp_gen_syscall_nrs_x86",
         ":libseccomp_gen_syscall_nrs_x86_64",
     ],
@@ -2441,6 +2529,7 @@ cc_genrule {
     out: [
         "arm64_app_zygote_policy.cpp",
         "arm_app_zygote_policy.cpp",
+        "riscv64_app_zygote_policy.cpp",
         "x86_64_app_zygote_policy.cpp",
         "x86_app_zygote_policy.cpp",
     ],
@@ -2462,6 +2551,7 @@ cc_genrule {
         "SECCOMP_PRIORITY.TXT",
         ":libseccomp_gen_syscall_nrs_arm",
         ":libseccomp_gen_syscall_nrs_arm64",
+        ":libseccomp_gen_syscall_nrs_riscv64",
         ":libseccomp_gen_syscall_nrs_x86",
         ":libseccomp_gen_syscall_nrs_x86_64",
     ],
@@ -2469,6 +2559,7 @@ cc_genrule {
     out: [
         "arm64_app_policy.cpp",
         "arm_app_policy.cpp",
+        "riscv64_app_policy.cpp",
         "x86_64_app_policy.cpp",
         "x86_app_policy.cpp",
     ],
@@ -2489,6 +2580,7 @@ cc_genrule {
         "SECCOMP_PRIORITY.TXT",
         ":libseccomp_gen_syscall_nrs_arm",
         ":libseccomp_gen_syscall_nrs_arm64",
+        ":libseccomp_gen_syscall_nrs_riscv64",
         ":libseccomp_gen_syscall_nrs_x86",
         ":libseccomp_gen_syscall_nrs_x86_64",
     ],
@@ -2496,6 +2588,7 @@ cc_genrule {
     out: [
         "arm64_system_policy.cpp",
         "arm_system_policy.cpp",
+        "riscv64_system_policy.cpp",
         "x86_64_system_policy.cpp",
         "x86_system_policy.cpp",
     ],
