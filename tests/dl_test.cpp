@@ -96,6 +96,8 @@ TEST(dl, lib_does_not_preempt_global_protected) {
   static constexpr const char* kAlternatePathToLinker = "/system/bin/x86_64/linker64";
 #elif defined (__i386__)
   static constexpr const char* kAlternatePathToLinker = "/system/bin/x86/linker";
+#elif defined(__riscv) && (__riscv_xlen == 64)
+  static constexpr const char* kAlternatePathToLinker = "/system/bin/riscv64/linker";
 #else
 #error "Unknown architecture"
 #endif
