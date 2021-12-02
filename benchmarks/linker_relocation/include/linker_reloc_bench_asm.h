@@ -56,6 +56,14 @@
 #define DATA_WORD(val) .quad val
 #define MAIN .globl main; main: xorl %eax, %eax; retq
 
+#elif defined(__riscv) && (__riscv_xlen == 64)
+
+// FIXME: have not tested it out, is it ok?
+#define GOT_RELOC(sym) auipc a0, %got_pcrel_hi(sym)
+#define CALL(sym) call sym@plt
+#define DATA_WORD(val) .quad val
+#define MAIN .globl main; main: nop; ret
+
 #else
 #error "Unrecognized architecture"
 #endif
