@@ -139,11 +139,15 @@ size_t StaticTlsLayout::reserve_exe_segment_and_tcb(const TlsSegment* exe_segmen
 
 #elif __riscv_xlen == 64
 
-  const size_t exe_size = round_up_with_overflow_check(exe_segment->size, exe_segment->alignment);
-  reserve(exe_size, 1);
-  const size_t max_align = MAX(alignof(bionic_tcb), exe_segment->alignment);
-  offset_bionic_tcb_ = reserve(sizeof(bionic_tcb), max_align);
-  return offset_bionic_tcb_ - exe_size;
+  // FIXME: Align TCB block and EXE's segment more accurate. For current implementation,
+  // alignment requirement is not considered carefully.
+
+  // Reserve bionic tcb 
+  offset_bionic_tcb_ = reserve(sizeof(bionic_tcb), 1);
+
+  // The RISCV ELF TLS ABI specifies that thread pointer point to the end of TCB
+  const size_t result = reserve(exe_segment->size, exe_segment->alignment);
+  return result;
 
 #else
 #error "Unrecognized architecture"
