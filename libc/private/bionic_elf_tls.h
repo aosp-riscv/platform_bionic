@@ -201,3 +201,7 @@ extern "C" void* TLS_GET_ADDR(const TlsIndex* ti) TLS_GET_ADDR_CCONV;
 struct bionic_tcb;
 void __free_dynamic_tls(bionic_tcb* tcb);
 void __notify_thread_exit_callbacks();
+
+#if defined(__riscv)
+#define TLS_DTV_OFFSET 0x800
+#endif

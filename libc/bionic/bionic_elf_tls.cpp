@@ -138,12 +138,11 @@ size_t StaticTlsLayout::reserve_exe_segment_and_tcb(const TlsSegment* exe_segmen
   return offset_bionic_tcb_ - exe_size;
 
 #elif __riscv_xlen == 64
-
+  // FIXME: Align TCB block and EXE's segment more accurate. For current implementation,
+  // alignment requirement is not considered carefully.
+  offset_bionic_tcb_ = reserve(sizeof(bionic_tcb), 1);
   const size_t exe_size = round_up_with_overflow_check(exe_segment->size, exe_segment->alignment);
-  reserve(exe_size, 1);
-  const size_t max_align = MAX(alignof(bionic_tcb), exe_segment->alignment);
-  offset_bionic_tcb_ = reserve(sizeof(bionic_tcb), max_align);
-  return offset_bionic_tcb_ - exe_size;
+  return reserve(exe_size, 1);
 
 #else
 #error "Unrecognized architecture"
@@ -320,7 +319,11 @@ __attribute__((noinline)) static void* tls_get_addr_slow_path(const TlsIndex* ti
     }
   }
 
+#ifdef __riscv
+  return static_cast<char*>(mod_ptr) + ti->offset + TLS_DTV_OFFSET;
+#else
   return static_cast<char*>(mod_ptr) + ti->offset;
+#endif
 }
 
 // Returns the address of a thread's TLS memory given a module ID and an offset
@@ -340,7 +343,11 @@ extern "C" void* TLS_GET_ADDR(const TlsIndex* ti) TLS_GET_ADDR_CCONV {
   if (__predict_true(generation == dtv->generation)) {
     void* mod_ptr = dtv->modules[__tls_module_id_to_idx(ti->module_id)];
     if (__predict_true(mod_ptr != nullptr)) {
+#ifdef __riscv
+      return static_cast<char*>(mod_ptr) + ti->offset + TLS_DTV_OFFSET;
+#else
       return static_cast<char*>(mod_ptr) + ti->offset;
+#endif
     }
   }
 
