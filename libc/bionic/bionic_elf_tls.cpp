@@ -140,7 +140,11 @@ size_t StaticTlsLayout::reserve_exe_segment_and_tcb(const TlsSegment* exe_segmen
 #elif __riscv_xlen == 64
   // FIXME: Align TCB block and EXE's segment more accurate. For current implementation,
   // alignment requirement is not considered carefully.
+
+  // First reserve enough space for the TCB before the executable segment.
   offset_bionic_tcb_ = reserve(sizeof(bionic_tcb), 1);
+
+  // Then reserve the segment itself.
   const size_t exe_size = round_up_with_overflow_check(exe_segment->size, exe_segment->alignment);
   return reserve(exe_size, 1);
 

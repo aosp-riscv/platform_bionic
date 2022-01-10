@@ -96,19 +96,19 @@
 
 #elif __riscv_xlen == 64
 
-#define MIN_TLS_SLOT              -10
+#define MIN_TLS_SLOT             (-9) // update this value when reserving a slot
+#define TLS_SLOT_BIONIC_TLS      (-9)
+#define TLS_SLOT_DTV             (-8)
+#define TLS_SLOT_THREAD_ID       (-7)
+#define TLS_SLOT_APP             (-6) // was historically used for errno
+#define TLS_SLOT_OPENGL          (-5)
+#define TLS_SLOT_OPENGL_API      (-4)
+#define TLS_SLOT_STACK_GUARD     (-3)
+#define TLS_SLOT_SANITIZER       (-2) // was historically used for dlerror
+#define TLS_SLOT_ART_THREAD_SELF (-1)
 
-#define TLS_SLOT_SELF             -10
-#define TLS_SLOT_THREAD_ID        -9
-#define TLS_SLOT_APP              -8 // was historically used for errno
-#define TLS_SLOT_OPENGL           -7
-#define TLS_SLOT_OPENGL_API       -6
-#define TLS_SLOT_STACK_GUARD      -5
-#define TLS_SLOT_SANITIZER        -4 // was historically used for dlerror
-#define TLS_SLOT_ART_THREAD_SELF  -3
-#define TLS_SLOT_DTV              -2
-#define TLS_SLOT_BIONIC_TLS       -1
-#define MAX_TLS_SLOT              -1 // update this value when reserving a slot
+// The maximum slot is fixed by the minimum TLS alignment in Bionic executables.
+#define MAX_TLS_SLOT             (-1)
 
 #elif defined(__i386__) || defined(__x86_64__)
 
