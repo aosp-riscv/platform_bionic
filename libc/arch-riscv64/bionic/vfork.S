@@ -43,7 +43,10 @@ __BIONIC_WEAK_ASM_FOR_NATIVE_BRIDGE(vfork)
     sw      t1, 20(t0)
 
     li      a0, (CLONE_VM | CLONE_VFORK | SIGCHLD)
-    mv      a1, sp
+    mv      a1, zero //uses a duplicate of the parent's stack
+    mv      a2, zero
+    mv      a3, zero
+    mv      a4, zero
 
     li      a7, __NR_clone
     scall
