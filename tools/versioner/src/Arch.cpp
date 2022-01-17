@@ -28,14 +28,14 @@ std::string to_string(const Arch& arch) {
     case Arch::arm64:
       return "arm64";
 
+    case Arch::riscv64:
+      return "riscv64";
+
     case Arch::x86:
       return "x86";
 
     case Arch::x86_64:
       return "x86_64";
-    
-    case Arch::riscv64:
-      return "riscv64";
   }
 
   errx(1, "unknown arch '%zu'", size_t(arch));
@@ -44,9 +44,9 @@ std::string to_string(const Arch& arch) {
 static const std::unordered_map<std::string, Arch> arch_name_map{
   {"arm", Arch::arm},
   {"arm64", Arch::arm64},
+  {"riscv64", Arch::riscv64},
   {"x86", Arch::x86},
   {"x86_64", Arch::x86_64},
-  {"riscv64", Arch::riscv64},
 };
 
 std::optional<Arch> arch_from_string(const std::string& name) {

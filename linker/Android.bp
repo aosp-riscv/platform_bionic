@@ -390,6 +390,11 @@ cc_binary {
                 profile_file: "bionic/linker_arm_arm64.profdata",
             },
         },
+        android_riscv64: {
+            pgo: {
+                profile_file: "bionic/linker_riscv_riscv64.profdata",
+            },
+        },
         android_arm: {
             pgo: {
                 profile_file: "bionic/linker_arm_arm64.profdata",
@@ -403,11 +408,6 @@ cc_binary {
         android_x86: {
             pgo: {
                 profile_file: "bionic/linker_x86_x86_64.profdata",
-            },
-        },
-        android_riscv64: {
-            pgo: {
-                profile_file: "bionic/linker_riscv64_riscv64.profdata",
             },
         },
     },
@@ -458,8 +458,8 @@ cc_library {
         "-Wl,--exclude-libs=libgcc_stripped.a",
         "-Wl,--exclude-libs=libclang_rt.builtins-arm-android.a",
         "-Wl,--exclude-libs=libclang_rt.builtins-aarch64-android.a",
-        "-Wl,--exclude-libs=libclang_rt.builtins-riscv64-android.a",
         "-Wl,--exclude-libs=libclang_rt.builtins-i686-android.a",
+        "-Wl,--exclude-libs=libclang_rt.builtins-riscv64-android.a",
         "-Wl,--exclude-libs=libclang_rt.builtins-x86_64-android.a",
     ],
 

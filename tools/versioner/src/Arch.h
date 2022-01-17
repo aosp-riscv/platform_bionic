@@ -28,10 +28,10 @@
 enum class Arch : size_t {
   arm = 0,
   arm64,
-  x86,
-  x86_64,
   riscv32,
   riscv64,
+  x86,
+  x86_64,
 };
 
 std::string to_string(const Arch& arch);
@@ -131,9 +131,9 @@ static const std::set<Arch> supported_archs = {
 static ArchMap<std::string> arch_targets = {
   { Arch::arm, "arm-linux-androideabi" },
   { Arch::arm64, "aarch64-linux-android" },
+  { Arch::riscv64, "riscv64-linux-android" },
   { Arch::x86, "i686-linux-android" },
   { Arch::x86_64, "x86_64-linux-android" },
-  { Arch::riscv64, "riscv64-linux-android" },
 };
 
 static const std::set<int> default_levels = {
@@ -143,9 +143,9 @@ static const std::set<int> default_levels = {
 static const ArchMap<int> arch_min_api = {
   { Arch::arm, 9 },
   { Arch::arm64, 21 },
+  { Arch::riscv64, 21 },
   { Arch::x86, 9 },
   { Arch::x86_64, 21 },
-  { Arch::riscv64, 21 },
 };
 
 static const std::unordered_map<std::string, int> api_codename_map{

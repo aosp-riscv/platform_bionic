@@ -987,7 +987,7 @@ TEST(dlfcn, dlopen_executable_by_absolute_path) {
 #elif defined (__x86_64__)
 #define ALTERNATE_PATH_TO_SYSTEM_LIB "/system/lib64/x86_64/"
 #elif __riscv_xlen == 64
-#define ALTERNATE_PATH_TO_SYSTEM_LIB "/system/lib/riscv64/"
+#define ALTERNATE_PATH_TO_SYSTEM_LIB "/system/lib64/riscv64/"
 #else
 #error "Unknown architecture"
 #endif

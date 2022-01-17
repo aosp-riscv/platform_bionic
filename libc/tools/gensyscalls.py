@@ -78,6 +78,8 @@ arm64_call = syscall_stub_header + """\
 END(%(func)s)
 """
 
+
+#
 #
 # RISC-V64 assembler templates for each syscall stub
 #
@@ -243,6 +245,7 @@ def arm_eabi_genstub(syscall):
 
 def arm64_genstub(syscall):
     return arm64_call % syscall
+
 
 def riscv64_genstub(syscall):
     return riscv64_call % syscall
