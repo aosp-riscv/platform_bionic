@@ -1,5 +1,4 @@
-#include <string.h>
-#include <stdint.h>
+#include <unistd.h>
 
 void *memset(void *dest, int c, size_t n)
 {
