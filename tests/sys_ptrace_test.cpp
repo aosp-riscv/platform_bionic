@@ -257,7 +257,7 @@ static void watchpoint_imprecise_child(Uint128_t& data) {
   asm volatile("stm %0, { r0, r1, r2, r3 }" : : "r"(&data));
 #elif defined(__aarch64__)
   asm volatile("stp x0, x1, %0" : : "m"(data));
-#elif __riscv_xlen == 64
+#elif (defined(__riscv) && (__riscv_xlen == 64))
   // FIXME: need test
   asm volatile("sw a0, %0\n"
                "sw a1, 4%0\n" : : "m"(data));

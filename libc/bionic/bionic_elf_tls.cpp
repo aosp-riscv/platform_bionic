@@ -137,7 +137,7 @@ size_t StaticTlsLayout::reserve_exe_segment_and_tcb(const TlsSegment* exe_segmen
   offset_bionic_tcb_ = reserve(sizeof(bionic_tcb), max_align);
   return offset_bionic_tcb_ - exe_size;
 
-#elif __riscv_xlen == 64
+#elif (defined(__riscv) && (__riscv_xlen == 64))
   // FIXME: Align TCB block and EXE's segment more accurate. For current implementation,
   // alignment requirement is not considered carefully.
 
@@ -323,7 +323,7 @@ __attribute__((noinline)) static void* tls_get_addr_slow_path(const TlsIndex* ti
     }
   }
 
-#ifdef __riscv
+#if (defined(__riscv) && (__riscv_xlen == 64))
   return static_cast<char*>(mod_ptr) + ti->offset + TLS_DTV_OFFSET;
 #else
   return static_cast<char*>(mod_ptr) + ti->offset;
@@ -347,7 +347,7 @@ extern "C" void* TLS_GET_ADDR(const TlsIndex* ti) TLS_GET_ADDR_CCONV {
   if (__predict_true(generation == dtv->generation)) {
     void* mod_ptr = dtv->modules[__tls_module_id_to_idx(ti->module_id)];
     if (__predict_true(mod_ptr != nullptr)) {
-#ifdef __riscv
+#if (defined(__riscv) && (__riscv_xlen == 64))
       return static_cast<char*>(mod_ptr) + ti->offset + TLS_DTV_OFFSET;
 #else
       return static_cast<char*>(mod_ptr) + ti->offset;

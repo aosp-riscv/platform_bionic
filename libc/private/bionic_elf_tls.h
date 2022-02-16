@@ -202,6 +202,6 @@ struct bionic_tcb;
 void __free_dynamic_tls(bionic_tcb* tcb);
 void __notify_thread_exit_callbacks();
 
-#if defined(__riscv)
+#if (defined(__riscv) && (__riscv_xlen == 64))
 #define TLS_DTV_OFFSET 0x800
 #endif
