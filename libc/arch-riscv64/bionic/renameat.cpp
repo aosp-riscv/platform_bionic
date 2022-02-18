@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,10 @@
  * SUCH DAMAGE.
  */
 
-#include <fcntl.h>
 #include <stdio.h>
 
-extern int renameat2(int __old_dir_fd, const char* __old_path, int __new_dir_fd, const char* __new_path, unsigned __flags);
-
+// syscall renameat is not defined for riscv, so we create one and call 
+// renameat2 internally
 int renameat(int olddirfd, const char *oldpath, int newdirfd, const char *newpath)
 {
   return renameat2(olddirfd, oldpath, newdirfd, newpath, 0);
