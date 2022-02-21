@@ -57,6 +57,9 @@ cc_object {
         arm64: {
             srcs: ["arch/arm64/begin.S"],
         },
+        riscv64: {
+            srcs: ["arch/riscv64/begin.S"],
+        },
         x86_64: {
             srcs: ["arch/x86_64/begin.S"],
         },
