@@ -87,8 +87,6 @@ cc_defaults {
 // -----------------------------------------------------------------------------
 // Prebuilt shared libraries for use in tests.
 // -----------------------------------------------------------------------------
-// FIXME: for riscv64, use arm64 binaries just to pass make, need to replace with
-// real riscv64 binaries
 
 cc_prebuilt_test_library_shared {
     name: "libtest_invalid-rw_load_segment",
