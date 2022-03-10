@@ -46,7 +46,7 @@ int fesetenv(const fenv_t* envp)
 
   __get_fcw(env);
   if (*envp != env)
-	__set_fcw(env);
+    __set_fcw(*envp);
   return 0;
 }
 
@@ -119,7 +119,7 @@ int feupdateenv(const fenv_t* envp)
 
 int feenableexcept(int mask __unused)
 {
-  return 0;
+  return -1;
 }
 
 int fedisableexcept(int mask __unused)
