@@ -347,6 +347,16 @@ cc_library {
         riscv64: {
             srcs: [
                 "riscv64/fenv.c",
+                "riscv64/lrint.S",
+                "riscv64/rint.S",
+            ],
+            exclude_srcs: [
+                "upstream-freebsd/lib/msun/src/s_llrint.c",
+                "upstream-freebsd/lib/msun/src/s_llrintf.c",
+                "upstream-freebsd/lib/msun/src/s_lrint.c",
+                "upstream-freebsd/lib/msun/src/s_lrintf.c",
+                "upstream-freebsd/lib/msun/src/s_rint.c",
+                "upstream-freebsd/lib/msun/src/s_rintf.c",
             ],
             version_script: ":libm.riscv64.map",
         },
