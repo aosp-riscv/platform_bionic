@@ -95,6 +95,12 @@ int fegetround(void)
 
 int fesetround(int round)
 {
+  /* Check whether requested rounding direction is supported
+   * Currently, we deem FE_TONEAREST_MM (RMM) as invalid
+   * should any usecase for that arise, we can simply change the mask */
+  if (round < FE_TONEAREST || round > FE_UPWARD) {
+    return -1;
+  }
   asm volatile ("fsrm %z0" : : "r" (round));
   return 0;
 }
