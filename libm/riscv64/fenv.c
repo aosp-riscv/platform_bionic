@@ -95,6 +95,9 @@ int fegetround(void)
 
 int fesetround(int round)
 {
+  if (round < FE_ROUNDMODE_MIN || round > FE_ROUNDMODE_MAX) {
+    return -1;
+  }
   asm volatile ("fsrm %z0" : : "r" (round));
   return 0;
 }
