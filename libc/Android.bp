@@ -906,7 +906,8 @@ cc_library_static {
 
         riscv64: {
             srcs: [
-                "arch-riscv64/generic/bionic/memcmp.c",
+                "arch-riscv64/generic/bionic/memcmp.S",
+                "arch-riscv64/generic/bionic/memset_chk.c",
                 "arch-riscv64/generic/bionic/memset.c",
                 "arch-riscv64/generic/bionic/memcpy.c",
                 "arch-riscv64/bionic/__bionic_clone.S",
@@ -1540,6 +1541,9 @@ cc_library_static {
         arm64: {
             srcs: ["arch-arm64/static_function_dispatch.S"],
         },
+        riscv64: {
+            srcs: ["arch-riscv64/static_function_dispatch.S"],
+        },
     },
 }
 
@@ -1564,6 +1568,9 @@ cc_library_static {
         },
         arm64: {
             srcs: ["arch-arm64/dynamic_function_dispatch.cpp"],
+        },
+        riscv64: {
+            srcs: ["arch-riscv64/dynamic_function_dispatch.cpp"],
         },
     },
 }
