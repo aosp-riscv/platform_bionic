@@ -908,8 +908,8 @@ cc_library_static {
             srcs: [
                 "arch-riscv64/generic/bionic/memcmp.S",
                 "arch-riscv64/generic/bionic/memset_chk.c",
-                "arch-riscv64/generic/bionic/memset.c",
-                "arch-riscv64/generic/bionic/memcpy.c",
+                "arch-riscv64/generic/bionic/memset.S",
+                "arch-riscv64/generic/bionic/memcpy.S",
                 "arch-riscv64/bionic/__bionic_clone.S",
                 "arch-riscv64/bionic/_exit_with_stack_teardown.S",
                 "arch-riscv64/bionic/setjmp.S",

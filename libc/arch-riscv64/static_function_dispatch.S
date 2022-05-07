@@ -33,5 +33,8 @@ ENTRY(name); \
     call t0,impl; \
 END(name)
 
+FUNCTION_DELEGATE(memmove, memmove_generic)
+FUNCTION_DELEGATE(memcpy, memcpy_generic)
+FUNCTION_DELEGATE(memset, memset_generic)
 FUNCTION_DELEGATE(__memset_chk, __memset_chk_generic)
 FUNCTION_DELEGATE(memcmp, memcmp_generic)

@@ -37,9 +37,24 @@ DEFINE_IFUNC_FOR(memcmp) {
     RETURN_FUNC(memcmp_func, memcmp_generic);
 }
 
+typedef void* memset_func(void* __dst, int __ch, size_t __n);
+DEFINE_IFUNC_FOR(memset) {
+    RETURN_FUNC(memset_func, memset_generic);
+}
+
 typedef void* __memset_chk_func(void *s, int c, size_t n, size_t n2);
 DEFINE_IFUNC_FOR(__memset_chk) {
     RETURN_FUNC(__memset_chk_func, __memset_chk_generic);
+}
+
+typedef void* memmove_func(void* __dst, const void* __src, size_t __n);
+DEFINE_IFUNC_FOR(memmove) {
+    RETURN_FUNC(memmove_func, memmove_generic);
+}
+
+typedef void* memcpy_func(void*, const void*, size_t);
+DEFINE_IFUNC_FOR(memcpy) {
+    RETURN_FUNC(memcpy_func, memcpy_generic);
 }
 
 }  // extern "C"
